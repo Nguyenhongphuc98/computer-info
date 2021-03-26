@@ -12,7 +12,7 @@ if (process.platfform === 'darwin') {
     components = ['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'screen', 'network'];
 }
 
-function getComputerInfo(categories) {
+function getComputerInfo(categories, callback) {
     // Filter invalid args
     const invalids = [];
     const valids = [];
@@ -28,7 +28,9 @@ function getComputerInfo(categories) {
     return new Promise((resolve, reject) => {
 
         if (invalids.length === categories.length) {
-            reject('No categories found!!!');
+            const message = 'No categories found!!!';
+            if (callback) { callback(null, message); }
+            reject(message);
         } else {
 
             let excuteables = [];
@@ -49,6 +51,7 @@ function getComputerInfo(categories) {
                         result['categories'][v.item] = v;
                     })
 
+                    if (callback) { callback(result, null); }
                     resolve(result);
                 })
                 .catch(e => {
