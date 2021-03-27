@@ -1,5 +1,5 @@
 var os = require('os');
-const { sysctl, profiler } = require('./utils');
+const { sysctl, profiler, getValue } = require('./utils');
 
 //ioreg -c IOPlatformExpertDevice -d 2 
 // => get board_id, IOPlatformUUID, IOPlatformSerialNumber same serial number of mac, serial-number.
@@ -21,7 +21,7 @@ function model() {
         sysctl('hw.model', modelName => {
             const md = {
                 'item': 'Model',
-                'name': modelName
+                'name': modelName.toString()
             }
             resolve(md);
         })
@@ -34,7 +34,7 @@ function cpu() {
         sysctl('machdep.cpu.brand_string', cpu => {
             const c = {
                 'item': 'CPU',
-                'brand': cpu
+                'brand': cpu.toString()
             }
             resolve(c);
         })
@@ -58,7 +58,7 @@ function thread() {
         sysctl('machdep.cpu.thread_count', numthreads => {
             const t = {
                 'item': 'Thread',
-                'number of thread': numthreads
+                'numOfThread': numthreads.toString()
             }
             resolve(t);
         })
@@ -71,7 +71,7 @@ function l2() {
         sysctl('hw.l2cachesize', mem => {
             const m = {
                 'item': 'L2',
-                'size (bytes)': mem
+                'sizeInBytes': mem.toString()
             }
             resolve(m);
         })
@@ -82,7 +82,7 @@ function l3() {
         sysctl('hw.l3cachesize', mem => {
             const m = {
                 'item': 'L3',
-                'size (bytes)': mem
+                'sizeInBytes': mem.toString()
             }
             resolve(m);
         })
@@ -95,7 +95,7 @@ function memory() {
         sysctl('hw.memsize', mem => {
             const m = {
                 'item': 'Memory',
-                'size (bytes)': mem
+                'sizeInBytes': mem.toString()
             }
             resolve(m);
         })
@@ -105,16 +105,15 @@ function memory() {
 // 8. Camera
 function camera() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPCameraDataType', rows => {
-                const camera = {
-                    'item': 'Camera',
-                    'name': rows[1].trim().slice(0, -1),
-                    'modelID': rows[2].split(":")[1].trim(),
-                    'uniqueID': rows[3].split(":")[1].trim()
-                };
-                resolve(camera);
-            })
+        profiler('SPCameraDataType', lines => {
+            const rows = lines.filter(l => l !== '');
+            const camera = {
+                'item': 'Camera',
+                'name': rows[1].trim(),
+                'modelID': getValue(rows, "Model ID", ":", true),
+                'uniqueID': getValue(rows, "Unique ID", ":", true)
+            };
+            resolve(camera);
         })
     })
 }
@@ -122,15 +121,14 @@ function camera() {
 // 9. Apple pay
 function applePay() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPSecureElementDataType', rows => {
-                const applePay = {
-                    'item': 'ApplePay',
-                    'platformID': rows[2].split(":")[1].trim(),
-                    'serialNumber': rows[3].split(":")[1].trim()
-                };
-                resolve(applePay);
-            })
+        profiler('SPSecureElementDataType', rows => {
+            const applePay = {
+                'item': 'ApplePay',
+                'platformID': getValue(rows, 'Platform ID', ':', true),
+                'serialNumber': getValue(rows, 'Serial Number', ':', true),
+                'JCOP_OS': getValue(rows, 'JCOP OS', ':', true)
+            };
+            resolve(applePay);
         })
     })
 }
@@ -138,32 +136,35 @@ function applePay() {
 // 10. Bluetooth
 function bluetooth() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPBluetoothDataType', rows => {
-                const bluetooth = {
-                    'item': 'Bluetooth',
-                    'version': rows[1].split(":")[1].trim(),
-                    'adress': rows[3].split(":")[1].trim()
-                };
-                resolve(bluetooth);
-            })
+        profiler('SPBluetoothDataType', rows => {
+            const bluetooth = {
+                'item': 'Bluetooth',
+                'version': getValue(rows, 'Apple Bluetooth Software Version', ':', true),
+                'adress': getValue(rows, 'Address', ':', true),
+                'manufacturer': getValue(rows, 'Manufacturer', ':', true),
+                'transport': getValue(rows, 'Transport', ':', true),
+                'chipset': getValue(rows, 'Chipset', ':', true),
+                'productID': getValue(rows, 'Product ID', ':', true)
+            };
+            resolve(bluetooth);
         })
     })
-
 }
 
 // 11. Ethernet
 function ethenet() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPEthernetDataType', rows => {
-                const ethernet = {
-                    'item': 'Ethenet',
-                    'version': rows[6].split(":")[1].trim(),
-                    'macAdress': rows[7].split(": ")[1].trim()
-                };
-                resolve(ethernet);
-            })
+        profiler('SPEthernetDataType', rows => {
+            const ethernet = {
+                'item': 'Ethenet',
+                'version': getValue(rows, 'Version', ':', true),
+                'type': getValue(rows, 'Type', ':', true),
+                'BSDName': getValue(rows, 'BSD name', ':', true),
+                'kextName': getValue(rows, 'Kext name', ':', true),
+                'macAdress': getValue(rows, 'MAC Address', ':', true),
+                'productID': getValue(rows, 'Product ID', ':', true)
+            };
+            resolve(ethernet);
         })
     })
 }
@@ -171,41 +172,40 @@ function ethenet() {
 // 12. Graphics
 function graphics() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPDisplaysDataType', rows => {
-                const graphics = {
-                    'item': 'Graphics',
-                    'chipsetModel': rows[2].split(":")[1].trim(),
-                    'type': rows[3].split(": ")[1].trim(),
-                    'deviceID': rows[7].split(": ")[1].trim()
-                };
-                resolve(graphics);
-            })
+        profiler('SPDisplaysDataType', rows => {
+            const graphics = {
+                'item': 'Graphics',
+                'chipsetModel': getValue(rows, 'Chipset Model', ':', true),
+                'type': getValue(rows, 'Type', ':', true),
+                'deviceID': getValue(rows, 'Device ID', ':', true),
+                'displayType': getValue(rows, 'Display Type', ':', true),
+                'resolution': getValue(rows, 'Resolution', ':', true),
+                'framebufferDepth': getValue(rows, 'Framebuffer Depth', ':', true)
+            };
+            resolve(graphics);
         })
     })
 }
 // 13. Hardware
 function hardware() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPHardwareDataType', rows => {
-                const hardware = {
-                    'item': 'Hardware',
-                    'modelName': rows[2].split(":")[1].trim(),
-                    'modelIdentifier': rows[3].split(": ")[1].trim(),
-                    'processerName': rows[4].split(": ")[1].trim(),
-                    'processerSpeed': rows[5].split(": ")[1].trim(),
-                    'numProcesser': rows[6].split(": ")[1].trim(),
-                    'totalCore': rows[7].split(": ")[1].trim(),
-                    'l1Cache': rows[8].split(": ")[1].trim(),
-                    'l2Cache': rows[9].split(": ")[1].trim(),
-                    'memory': rows[11].split(": ")[1].trim(),
-                    'bootRomVersion': rows[12].split(": ")[1].trim(),
-                    'serialNumber': rows[13].split(": ")[1].trim(),
-                    'hardWareUUID': rows[14].split(": ")[1].trim()
-                };
-                resolve(hardware);
-            })
+        profiler('SPHardwareDataType', rows => {
+            const hardware = {
+                'item': 'Hardware',
+                'modelName': getValue(rows, 'Model Name', ':', true),
+                'modelIdentifier': getValue(rows, 'Model Identifier', ':', true),
+                'processerName': getValue(rows, 'Processor Name', ':', true),
+                'processerSpeed': getValue(rows, 'Processor Speed', ':', true),
+                'numProcesser': getValue(rows, 'Number of Processors', ':', true),
+                'totalCore': getValue(rows, 'Total Number of Cores', ':', true),
+                'l2Cache': getValue(rows, 'L2 Cache (per Core)', ':', true),
+                'l3Cache': getValue(rows, 'L3 Cache', ':', true),
+                'memory': getValue(rows, 'Memory:', ':', true),
+                'bootRomVersion': getValue(rows, 'Boot ROM Version', ':', true),
+                'serialNumber': getValue(rows, 'Serial Number (system)', ':', true),
+                'hardWareUUID': getValue(rows, 'Hardware UUID', ':', true)
+            };
+            resolve(hardware);
         })
     })
 }
@@ -213,48 +213,46 @@ function hardware() {
 // 14. Wifi
 function wifi() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPNetworkLocationDataType', rows => {
-                const wifi = {
-                    'item': 'Wifi',
-                    'type': rows[5].split(":")[1].trim(),
-                    'macAdress': rows[7].split(": ")[1].trim(),
-                };
-                resolve(wifi);
-            })
+        profiler('SPNetworkLocationDataType', rows => {
+            const wifi = {
+                'item': 'Wifi',
+                'type': getValue(rows, 'Type:', ':', true),
+                'macAdress': getValue(rows, 'Hardware (MAC) Address', ':', true)
+            };
+            resolve(wifi);
         })
     })
 }
 // 15. Power
 function power() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPPowerDataType', rows => {
-                const power = {
-                    'item': 'Power',
-                    'serialNumber': rows[3].split(":")[1].trim(),
-                    'manufactuter': rows[4].split(": ")[1].trim(),
-                    'deviceName': rows[5].split(": ")[1].trim()
-                };
-                resolve(power);
-            })
+        profiler('SPPowerDataType', rows => {
+            const power = {
+                'item': 'Power',
+                'serialNumber': getValue(rows, 'Serial Number', ':', true),
+                'manufactuter': getValue(rows, 'Manufacturer', ':', true),
+                'deviceName': getValue(rows, 'Device Name', ':', true),
+                'firmwareVersion': getValue(rows, 'Firmware Version', ':', true),
+                'capacitymAh': getValue(rows, 'Full Charge Capacity (mAh)', ':', true),
+                'cycleCount': getValue(rows, 'Cycle Count', ':', true),
+                'condition': getValue(rows, 'Condition:', ':', true)
+            };
+            resolve(power);
         })
     })
 }
 // 16. Disk
 function disk() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPNVMeDataType', rows => {
-                const hardware = {
-                    'item': 'Disk',
-                    'capacity': rows[3].split(": ")[1].trim(),
-                    'model': rows[5].split(":")[1].trim(),
-                    'serialNumber': rows[7].split(": ")[1].trim(),
-                    'volumeUUID': rows[21].split(": ")[1].trim()
-                };
-                resolve(hardware);
-            })
+        profiler('SPNVMeDataType', rows => {
+            const hardware = {
+                'item': 'Disk',
+                'capacity': getValue(rows, 'Capacity:', ':', true),
+                'model': getValue(rows, 'Model:', ':', true),
+                'serialNumber': getValue(rows, 'Serial Number', ':', true),
+                'volumeUUID': getValue(rows, 'Volume UUID', ':', true)
+            };
+            resolve(hardware);
         })
     })
 }
@@ -262,19 +260,17 @@ function disk() {
 // 17. Ram
 function ram() {
     return new Promise((resolve, reject) => {
-        sysctl('machdep.cpu.brand_string', cpu => {
-            profiler('SPMemoryDataType', rows => {
-                const ram = {
-                    'item': 'Ram',
-                    'size': rows[5].split(": ")[1].trim() + " * " + rows[13].split(": ")[1].trim(),
-                    'type': rows[6].split(":")[1].trim() + " * " + rows[14].split(": ")[1].trim(),
-                    'speed': rows[7].split(": ")[1].trim() + " * " + rows[15].split(": ")[1].trim(),
-                    'manufactuter': rows[9].split(": ")[1].trim() + " * " + rows[17].split(": ")[1].trim(),
-                    'partNumber': rows[10].split(": ")[1].trim() + " * " + rows[18].split(": ")[1].trim(),
-                    'serialNumber': rows[11].split(": ")[1].trim() + " * " + rows[19].split(": ")[1].trim()
-                };
-                resolve(ram);
-            })
+        profiler('SPMemoryDataType', rows => {
+            const ram = {
+                'item': 'Ram',
+                'size': getValue(rows, 'Size', ':', true, true),
+                'type': getValue(rows, 'Type', ':', true, true),
+                'speed': getValue(rows, 'Speed', ':', true, true),
+                'manufactuter': getValue(rows, 'Manufacturer', ':', true, true),
+                'partNumber': getValue(rows, 'Part Number', ':', true, true),
+                'serialNumber': getValue(rows, 'Serial Number', ':', true, true)
+            };
+            resolve(ram);
         })
     })
 }
@@ -285,12 +281,11 @@ function software() {
         profiler('SPSoftwareDataType', rows => {
             const software = {
                 'item': 'Software',
-                'systemVersion': rows[2].split(": ")[1].trim(),
-                'kernelVersion': rows[3].split(":")[1].trim(),
-                'bootVolume': rows[4].split(": ")[1].trim(),
-                'computerName': rows[6].split(": ")[1].trim(),
-                'userName': rows[7].split(": ")[1].trim(),
-                'timeSinceBoot': rows[10].split(": ")[1].trim()
+                'systemVersion': getValue(rows, 'System Version', ':', true),
+                'kernelVersion': getValue(rows, 'Kernel Version', ':', true),
+                'bootVolume': getValue(rows, 'Boot Volume', ':', true),
+                'userName': getValue(rows, 'User Name', ':', true),
+                'timeSinceBoot': getValue(rows, 'Time since boot', ':', true),
             };
             resolve(software);
         })

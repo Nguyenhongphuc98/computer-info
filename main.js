@@ -4,7 +4,7 @@ const winOS = require('./win');
 let platf;
 let components = [];
 
-if (process.platfform === 'darwin') {
+if (process.platform === 'darwin') {
     platf = macOS;
     components = ['host', 'model', 'cpu', 'user', 'thread', 'l3', 'l2', 'memory', 'camera', 'applePay', 'bluetooth', 'ethenet', 'graphics', 'hardware', 'wifi', 'power', 'disk', 'ram', 'software'];
 } else {
@@ -39,7 +39,7 @@ function getComputerInfo(categories, callback) {
                 result['invalidCategories'] = invalids.toString();
             }
             result['validCategories'] = valids.toString();
-            result['categories'] = {}
+            result['categories'] = []
 
             valids.forEach(c => {
                 excuteables.push(getExcuteable(c));
@@ -48,7 +48,7 @@ function getComputerInfo(categories, callback) {
             Promise.all(excuteables)
                 .then(values => {
                     values.forEach(v => {
-                        result['categories'][v.item] = v;
+                        result['categories'].push(v);
                     })
 
                     if (callback) { callback(result, null); }

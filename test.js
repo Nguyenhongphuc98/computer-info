@@ -1,7 +1,7 @@
 const { getComputerInfo } = require('./main');
 
 // Promise style
-getComputerInfo(['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'screen', 'network', 'ehe1', 'ehehe2'])
+getComputerInfo(['host', 'model', 'cpu', 'user', 'thread', 'l3', 'l2', 'memory', 'camera', 'applePay', 'bluetooth', 'ethenet', 'graphics', 'hardware', 'wifi', 'power', 'disk', 'ram', 'software'])
     .then(v => {
         console.log(v);
     })
@@ -10,14 +10,14 @@ getComputerInfo(['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memor
     })
 
 // Callback style
-getComputerInfo(['cpu', 'bluetooth', 'bios',
-    'power', 'software', 'disk', 'memory', 'screen',
-    'network', 'ehe1', 'ehehe2'],
-    (data, err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(data);
-        }
-    }
-)
+// getComputerInfo(['cpu', 'bluetooth', 'bios',
+//     'power', 'software', 'disk', 'memory', 'screen',
+//     'network', 'ehe1', 'ehehe2'],
+//     (data, err) => {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             console.log(data);
+//         }
+//     }
+// )

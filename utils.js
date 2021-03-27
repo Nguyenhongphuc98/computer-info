@@ -5,12 +5,12 @@ const exec = require('child_process').exec;
 function sysctl(cmd, callback) {
   // -n : Use this option to disable printing of the key name when printing values.
   const fullCmd = 'sysctl -n ' + cmd;
-  exe(fullCmd, callback);
+  macExe(fullCmd, callback);
 }
 
 function profiler(cmd, callback) {
   const fullCmd = 'system_profiler ' + cmd;
-  exe(fullCmd, callback);
+  macExe(fullCmd, callback);
 }
 
 // Win cmd ====================================
@@ -26,10 +26,9 @@ function wmic(cmd, callback) {
 
 // Excute cmd
 // use for mac
-function exe(cmd, callback) {
+function macExe(cmd, callback) {
   exec(cmd, (e, stdout) => {
-    const filtered = stdout.replace(/(^[ \t]*\n)/gm, "");
-    const rows = filtered.split("/\n|\r/");
+    const rows = stdout.toString().split("\n");
     callback(rows);
   })
 }
@@ -40,26 +39,34 @@ function winExe(cmd, callback) {
   })
 }
 
-function getValue(lines, property, separator, trimmed) {
+function getValue(lines, property, separator, trimmed, more = false) {
   separator = separator || ':';
   property = property.toLowerCase();
   trimmed = trimmed || false;
+
+  let result = '';
+
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i].toLowerCase().replace(/[\t\r]/g, '');
     if (trimmed) {
       line = line.trim();
     }
+
     if (line.startsWith(property)) {
       const parts = trimmed ? lines[i].trim().split(separator) : lines[i].split(separator);
       if (parts.length >= 2) {
         parts.shift();
-        return parts.join(separator).trim();
-      } else {
-        return '';
+        const value = parts.join(separator).trim();
+        result = more ? result + ' - ' +  value : value;
+      } 
+
+      if (!more) {
+        break;
       }
     }
   }
-  return '';
+
+  return result.startsWith(' - ') ? result.substring(3) : result;
 }
 
 function getMemoryType(id) {
