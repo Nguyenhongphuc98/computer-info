@@ -1,11 +1,11 @@
 {
-  "name": "computerinfo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "name": "mycomputer-info",
+  "version": "1.0.1",
+  "description": "Easy to get computer info by categories",
+  "main": "lib/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "nguyenhongphuc98",
   "license": "ISC"
 }
