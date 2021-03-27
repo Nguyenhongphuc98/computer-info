@@ -1,16 +1,18 @@
-# computer-info
+# mycomputer-info 
 Get computer information with just one line
-# Quick start
 ## Installation
-waiting to distribute, please pull this code and add to your project :blush:
+```
+npm i mycomputer-info 
+```
+:blush:
 ## Usage
 :purple_heart::purple_heart: computer-info provide two way to get info. Promise and callback style.
 ```
-const { getComputerInfo } = require('./main');
+const { getComputerInfo } = require('mycomputer-info');
 ```
 ```
 // Promise style
-getComputerInfo(['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'screen', 'network', 'ehe1', 'ehehe2'])
+getComputerInfo(['category1', 'category2'[, categoryn])
     .then(v => {
         console.log(v);
     })
@@ -19,9 +21,7 @@ getComputerInfo(['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memor
     })
 
 // Callback style
-getComputerInfo(['cpu', 'bluetooth', 'bios',
-    'power', 'software', 'disk', 'memory', 'screen',
-    'network', 'ehe1', 'ehehe2'],
+getComputerInfo(['category1', 'category2'[, categoryn],
     (data, err) => {
         if (err) {
             console.log(err);
@@ -30,6 +30,15 @@ getComputerInfo(['cpu', 'bluetooth', 'bios',
         }
     }
 )
+```
+## Support categories
+### :purple_heart::purple_heart:Mac:
+```
+'host', 'model', 'cpu', 'user', 'thread', 'l3', 'l2', 'memory', 'camera', 'applePay', 'bluetooth', 'ethenet', 'graphics', 'hardware', 'wifi', 'power', 'disk', 'ram', 'software'
+```
+### :purple_heart::purple_heart:Win:
+```
+'cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'display', 'network', 'graphics', 'sound'
 ```
 # What's in next version
 Guess :eyes::eyes:
