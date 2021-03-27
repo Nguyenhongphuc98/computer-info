@@ -57,8 +57,8 @@ function getValue(lines, property, separator, trimmed, more = false) {
       if (parts.length >= 2) {
         parts.shift();
         const value = parts.join(separator).trim();
-        result = more ? result + ' - ' +  value : value;
-      } 
+        result = more ? result + ' - ' + value : value;
+      }
 
       if (!more) {
         break;
@@ -194,6 +194,32 @@ function getBattreyStatus(id) {
   }
 }
 
+function getStatusInfo(ids) {
+  sttInfos = ids.split(' - ');
+  let infoStr = '';
+
+  function idToStr(id) {
+    switch (id) {
+      case '1': return "Other";
+      case '2': return "Unknown";
+      case '3': return "Enable";
+      case '4': return "Disable";
+      case '5': return "Not Applicable";
+      default:
+        return "Unknown";
+    }
+  }
+
+  for (let i = 0; i < sttInfos.length; i++) {
+    infoStr = infoStr + ' - ' + idToStr(sttInfos[i]);
+  }
+  if (infoStr.startsWith(' - ')) {
+    infoStr = infoStr.substring(3);
+  }
+
+  return infoStr;
+}
+
 function csvToObject(csv, name) {
   const lines = csv.split(/\r\n|\n/);
   const rows = [];
@@ -237,5 +263,6 @@ module.exports = {
   winExe,
   csvToObject,
   getMemoryType,
-  getFormFactor
+  getFormFactor,
+  getStatusInfo
 };

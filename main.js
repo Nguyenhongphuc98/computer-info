@@ -9,7 +9,7 @@ if (process.platform === 'darwin') {
     components = ['host', 'model', 'cpu', 'user', 'thread', 'l3', 'l2', 'memory', 'camera', 'applePay', 'bluetooth', 'ethenet', 'graphics', 'hardware', 'wifi', 'power', 'disk', 'ram', 'software'];
 } else {
     platf = winOS;
-    components = ['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'display', 'network', 'graphics'];
+    components = ['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'display', 'network', 'graphics', 'sound'];
 }
 
 function getComputerInfo(categories, callback) {
@@ -92,6 +92,7 @@ function getExcuteable(category) {
         case 'display': return platf.display();
         case 'network': return platf.network();
         case 'graphics': return platf.graphics();
+        case 'sound': return platf.sound();
     }
 }
 

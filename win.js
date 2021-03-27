@@ -1,5 +1,6 @@
 const {
-    wmic, winExe, getValue, getFormFactor, getMemoryType, getChemistry, getBattreyStatus, getAvailability
+    wmic, winExe, getValue, getFormFactor, getMemoryType, getChemistry,
+     getBattreyStatus, getAvailability, getStatusInfo
 } = require('./utils');
 
 function cpu() {
@@ -228,6 +229,23 @@ function network() {
     })
 }
 
+function sound() {
+    return new Promise((resolve, reject) => {
+        wmic('path Win32_SoundDevice get/format:value', rows => {
+
+            const s = {
+                'item': 'sound',
+                'productName': getValue(rows, 'ProductName', '=', false, true),
+                'StatusInfo': getStatusInfo(getValue(rows, 'StatusInfo', '=', false, true)),
+                'Status': getValue(rows, 'Status=', '=', false, true),
+                'PNPDeviceID': getValue(rows, 'PNPDeviceID', '=', false, true),
+                'Manufacturer': getValue(rows, 'Manufacturer', '=', false, true)
+            }
+            resolve(s);
+        })
+    })
+}
+
 module.exports = {
     cpu,
     bluetooth,
@@ -238,5 +256,6 @@ module.exports = {
     memory,
     display,
     network,
-    graphics
+    graphics,
+    sound
 };
