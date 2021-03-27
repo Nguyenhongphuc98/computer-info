@@ -9,7 +9,7 @@ if (process.platform === 'darwin') {
     components = ['host', 'model', 'cpu', 'user', 'thread', 'l3', 'l2', 'memory', 'camera', 'applePay', 'bluetooth', 'ethenet', 'graphics', 'hardware', 'wifi', 'power', 'disk', 'ram', 'software'];
 } else {
     platf = winOS;
-    components = ['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'screen', 'network'];
+    components = ['cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'display', 'network', 'graphics'];
 }
 
 function getComputerInfo(categories, callback) {
@@ -48,6 +48,7 @@ function getComputerInfo(categories, callback) {
             Promise.all(excuteables)
                 .then(values => {
                     values.forEach(v => {
+                        // console.log(v);
                         result['categories'].push(v);
                     })
 
@@ -88,8 +89,9 @@ function getExcuteable(category) {
 
         // Windows only =============================================
         case 'bios': return platf.bios();
-        case 'screen': return platf.screen();
+        case 'display': return platf.display();
         case 'network': return platf.network();
+        case 'graphics': return platf.graphics();
     }
 }
 

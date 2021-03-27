@@ -107,13 +107,13 @@ function camera() {
     return new Promise((resolve, reject) => {
         profiler('SPCameraDataType', lines => {
             const rows = lines.filter(l => l !== '');
-            const camera = {
+            const c = {
                 'item': 'Camera',
                 'name': rows[1].trim(),
                 'modelID': getValue(rows, "Model ID", ":", true),
                 'uniqueID': getValue(rows, "Unique ID", ":", true)
             };
-            resolve(camera);
+            resolve(c);
         })
     })
 }
@@ -122,13 +122,13 @@ function camera() {
 function applePay() {
     return new Promise((resolve, reject) => {
         profiler('SPSecureElementDataType', rows => {
-            const applePay = {
+            const ap = {
                 'item': 'ApplePay',
                 'platformID': getValue(rows, 'Platform ID', ':', true),
                 'serialNumber': getValue(rows, 'Serial Number', ':', true),
                 'JCOP_OS': getValue(rows, 'JCOP OS', ':', true)
             };
-            resolve(applePay);
+            resolve(ap);
         })
     })
 }
@@ -137,7 +137,7 @@ function applePay() {
 function bluetooth() {
     return new Promise((resolve, reject) => {
         profiler('SPBluetoothDataType', rows => {
-            const bluetooth = {
+            const bth = {
                 'item': 'Bluetooth',
                 'version': getValue(rows, 'Apple Bluetooth Software Version', ':', true),
                 'adress': getValue(rows, 'Address', ':', true),
@@ -146,7 +146,7 @@ function bluetooth() {
                 'chipset': getValue(rows, 'Chipset', ':', true),
                 'productID': getValue(rows, 'Product ID', ':', true)
             };
-            resolve(bluetooth);
+            resolve(bth);
         })
     })
 }
@@ -155,7 +155,7 @@ function bluetooth() {
 function ethenet() {
     return new Promise((resolve, reject) => {
         profiler('SPEthernetDataType', rows => {
-            const ethernet = {
+            const eth = {
                 'item': 'Ethenet',
                 'version': getValue(rows, 'Version', ':', true),
                 'type': getValue(rows, 'Type', ':', true),
@@ -164,7 +164,7 @@ function ethenet() {
                 'macAdress': getValue(rows, 'MAC Address', ':', true),
                 'productID': getValue(rows, 'Product ID', ':', true)
             };
-            resolve(ethernet);
+            resolve(eth);
         })
     })
 }
@@ -173,7 +173,7 @@ function ethenet() {
 function graphics() {
     return new Promise((resolve, reject) => {
         profiler('SPDisplaysDataType', rows => {
-            const graphics = {
+            const g = {
                 'item': 'Graphics',
                 'chipsetModel': getValue(rows, 'Chipset Model', ':', true),
                 'type': getValue(rows, 'Type', ':', true),
@@ -182,7 +182,7 @@ function graphics() {
                 'resolution': getValue(rows, 'Resolution', ':', true),
                 'framebufferDepth': getValue(rows, 'Framebuffer Depth', ':', true)
             };
-            resolve(graphics);
+            resolve(g);
         })
     })
 }
@@ -190,7 +190,7 @@ function graphics() {
 function hardware() {
     return new Promise((resolve, reject) => {
         profiler('SPHardwareDataType', rows => {
-            const hardware = {
+            const hw = {
                 'item': 'Hardware',
                 'modelName': getValue(rows, 'Model Name', ':', true),
                 'modelIdentifier': getValue(rows, 'Model Identifier', ':', true),
@@ -205,7 +205,7 @@ function hardware() {
                 'serialNumber': getValue(rows, 'Serial Number (system)', ':', true),
                 'hardWareUUID': getValue(rows, 'Hardware UUID', ':', true)
             };
-            resolve(hardware);
+            resolve(hw);
         })
     })
 }
@@ -214,12 +214,12 @@ function hardware() {
 function wifi() {
     return new Promise((resolve, reject) => {
         profiler('SPNetworkLocationDataType', rows => {
-            const wifi = {
+            const wi = {
                 'item': 'Wifi',
                 'type': getValue(rows, 'Type:', ':', true),
                 'macAdress': getValue(rows, 'Hardware (MAC) Address', ':', true)
             };
-            resolve(wifi);
+            resolve(wi);
         })
     })
 }
@@ -227,7 +227,7 @@ function wifi() {
 function power() {
     return new Promise((resolve, reject) => {
         profiler('SPPowerDataType', rows => {
-            const power = {
+            const po = {
                 'item': 'Power',
                 'serialNumber': getValue(rows, 'Serial Number', ':', true),
                 'manufactuter': getValue(rows, 'Manufacturer', ':', true),
@@ -237,7 +237,7 @@ function power() {
                 'cycleCount': getValue(rows, 'Cycle Count', ':', true),
                 'condition': getValue(rows, 'Condition:', ':', true)
             };
-            resolve(power);
+            resolve(po);
         })
     })
 }
@@ -245,14 +245,14 @@ function power() {
 function disk() {
     return new Promise((resolve, reject) => {
         profiler('SPNVMeDataType', rows => {
-            const hardware = {
+            const di = {
                 'item': 'Disk',
                 'capacity': getValue(rows, 'Capacity:', ':', true),
                 'model': getValue(rows, 'Model:', ':', true),
                 'serialNumber': getValue(rows, 'Serial Number', ':', true),
                 'volumeUUID': getValue(rows, 'Volume UUID', ':', true)
             };
-            resolve(hardware);
+            resolve(di);
         })
     })
 }
@@ -261,7 +261,7 @@ function disk() {
 function ram() {
     return new Promise((resolve, reject) => {
         profiler('SPMemoryDataType', rows => {
-            const ram = {
+            const r = {
                 'item': 'Ram',
                 'size': getValue(rows, 'Size', ':', true, true),
                 'type': getValue(rows, 'Type', ':', true, true),
@@ -270,7 +270,7 @@ function ram() {
                 'partNumber': getValue(rows, 'Part Number', ':', true, true),
                 'serialNumber': getValue(rows, 'Serial Number', ':', true, true)
             };
-            resolve(ram);
+            resolve(r);
         })
     })
 }
@@ -279,7 +279,7 @@ function ram() {
 function software() {
     return new Promise((resolve, reject) => {
         profiler('SPSoftwareDataType', rows => {
-            const software = {
+            const sw = {
                 'item': 'Software',
                 'systemVersion': getValue(rows, 'System Version', ':', true),
                 'kernelVersion': getValue(rows, 'Kernel Version', ':', true),
@@ -287,7 +287,7 @@ function software() {
                 'userName': getValue(rows, 'User Name', ':', true),
                 'timeSinceBoot': getValue(rows, 'Time since boot', ':', true),
             };
-            resolve(software);
+            resolve(sw);
         })
     })
 }
