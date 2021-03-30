@@ -1,7 +1,7 @@
 const { getComputerInfo } = require('./lib/main');
 
 // Promise style
-getComputerInfo([ 'cpu', 'bluetooth', 'bios', 'power', 'software', 'disk', 'memory', 'display', 'network', 'graphics', 'sound', 'keyboard'])
+getComputerInfo(['host', 'model', 'cpu', 'user', 'thread', 'l3', 'l2', 'memory', 'camera', 'applePay', 'bluetooth', 'ethenet', 'graphics', 'hardware', 'wifi', 'power', 'disk', 'ram', 'software'])
     .then(v => {
         console.log(v);
     })
