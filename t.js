@@ -1,49 +1,45 @@
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
+var childProcess
+var currrentTask;
 
-function execute(tasks, elapse = 0) {
+function execute(tasks, elapse = 10) {
     if (!tasks || tasks.length === 0) {
         return;
     }
 
-    let currrentTask = tasks.shift();
-    const childProcess = exec(currrentTask.cmd);
+    currrentTask = tasks.shift();
+    childProcess = spawn(currrentTask.cmd, { shell: true });
 
     function next() {
-        // if (tasks.length > 0) {
-        //    setTimeout(() => {
-        //         // console.log(tasks);
-        //         currrentTask = tasks.shift();
-        //         console.log(currrentTask);
-        //         childProcess.stdin.write('wmic path Win32_SoundDevice get/format:value');
-        //         // childProcess.stdin.end();
-        //     }, elapse);
-        // }
+        if (tasks.length > 0) {
+            setTimeout(() => {
+                currrentTask = tasks.shift();
+                // console.log(currrentTask);
+                // if (childProcess.writeable) {
+                // console.log('safe to');
+                childProcess.stdin.write(currrentTask.cmd);
+            }, elapse);
+        }
     }
 
-    
 
     childProcess.stdout.on("data", data => {
         console.log(`stdout: ${data}`);
-        // currrentTask.handle(data, null);
-        // next();
+        console.log('ondata');
+        currrentTask.handle(data, null);
+        next();
     });
+
     childProcess.stdout.on("end", data => {
-       
         console.log('end===========');
-        // currrentTask.handle(data, null);
-        // next();
     });
 
     childProcess.stderr.on("data", data => {
-        console.log(`stderr: ${data}`);
         currrentTask.handle(null, data);
-        next();
     });
 
     childProcess.on('error', (error) => {
         console.log(`error: ${error.message}`);
-        // currrentTask.handle(null, error.message);
-        // next();
     });
 
     childProcess.on("close", code => {
@@ -54,13 +50,18 @@ function execute(tasks, elapse = 0) {
         console.log('exit');
     })
 
-    childProcess.stdin.write('wmic cpu get/value');
-    childProcess.stdin.end();
+
 }
 
 let tasks = [
     {
-        cmd: 'wmic path Win32_Keyboard get/format:value',
+        cmd: 'wmic path Win32_Keyboard get/format:value\n',
+        handle: (data, err) => {
+            // console.log(data);
+        }
+    },
+    {
+        cmd: 'wmic cpu get/format:value\n',
         handle: (data, err) => {
             // console.log(data);
         }
@@ -68,3 +69,32 @@ let tasks = [
 ]
 
 execute(tasks);
+
+
+
+// const cp = require('child_process');
+
+// function spawnInstance () {
+//   const c = cp.spawn('wmic cpu get/format:value', {shell: true});
+//   return command => {
+//     return new Promise((resolve, reject) => {
+//       c.stdout.on('data', d => resolve(String(d || 'empty stdout.\n')));
+//       c.stderr.once('data', d => reject(String(d || 'empty stderr.\n')));
+//       c.stdin.write(`echo "${command}" | bash;`);   // I tried this, not much better
+//       c.stdin.write('\n');
+//     });
+//   };
+// }
+
+// (async () => {
+//   const bash = spawnInstance();
+
+//   console.log(await bash('wmic cpu get/format:value'));
+
+//   console.log('now running cd node_modules...');
+//   console.log(await bash('wmic path Win32_Keyboard get/format:value'));
+
+// })()
+// .catch(e =>
+//   console.error(e)
+// );
