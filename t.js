@@ -1,4 +1,4 @@
-const { spawn } = require("child_process");
+const { exec } = require("child_process");
 var childProcess
 var currrentTask;
 
@@ -8,7 +8,7 @@ function execute(tasks, elapse = 10) {
     }
 
     currrentTask = tasks.shift();
-    childProcess = spawn(currrentTask.cmd, { shell: true });
+    childProcess = exec(currrentTask.cmd);
 
     function next() {
         if (tasks.length > 0) {
@@ -16,8 +16,9 @@ function execute(tasks, elapse = 10) {
                 currrentTask = tasks.shift();
                 // console.log(currrentTask);
                 // if (childProcess.writeable) {
-                // console.log('safe to');
+                console.log('safe to');
                 childProcess.stdin.write(currrentTask.cmd);
+                childProcess.stdin.end();
             }, elapse);
         }
     }
@@ -55,13 +56,13 @@ function execute(tasks, elapse = 10) {
 
 let tasks = [
     {
-        cmd: 'wmic path Win32_Keyboard get/format:value\n',
+        cmd: 'system_profiler SPSecureElementDataType && sysctl hw.model',
         handle: (data, err) => {
             // console.log(data);
         }
     },
     {
-        cmd: 'wmic cpu get/format:value\n',
+        cmd: 'SPBluetoothDataType\n\r',
         handle: (data, err) => {
             // console.log(data);
         }
