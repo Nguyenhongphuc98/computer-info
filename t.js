@@ -69,33 +69,6 @@ let tasks = [
     }
 ]
 
-execute(tasks);
-
-
-
-// const cp = require('child_process');
-
-// function spawnInstance () {
-//   const c = cp.spawn('wmic cpu get/format:value', {shell: true});
-//   return command => {
-//     return new Promise((resolve, reject) => {
-//       c.stdout.on('data', d => resolve(String(d || 'empty stdout.\n')));
-//       c.stderr.once('data', d => reject(String(d || 'empty stderr.\n')));
-//       c.stdin.write(`echo "${command}" | bash;`);   // I tried this, not much better
-//       c.stdin.write('\n');
-//     });
-//   };
-// }
-
-// (async () => {
-//   const bash = spawnInstance();
-
-//   console.log(await bash('wmic cpu get/format:value'));
-
-//   console.log('now running cd node_modules...');
-//   console.log(await bash('wmic path Win32_Keyboard get/format:value'));
-
-// })()
-// .catch(e =>
-//   console.error(e)
-// );
+// execute(tasks);
+const os = require('os');
+console.log(os.release());;
