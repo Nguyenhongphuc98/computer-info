@@ -2,13 +2,10 @@ const { getComputerInfo } = require('./lib/main');
 
 // Promise style
 getComputerInfo([
-    'cpu',      'bluetooth',
-    'bios',     'power',    
-    'software', 'disk',     
-    'memory',   'display',  
-    'graphics', 'sound',    
-    'keyboard', 'network', 'afas'
-  ], 200)
+    'cpu', 'bluetooth', 'bios', 'power',    
+    'software', 'disk', 'memory', 'display',  
+    'graphics', 'sound', 'keyboard', 'network', 'afas'
+  ], 100)
     .then(v => {
         console.log(v);
     })
