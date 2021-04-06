@@ -1,8 +1,9 @@
 {
   "name": "mycomputer-info",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Easy to get computer info by categories",
   "main": "lib/main.js",
+  "homepage": "https://github.com/Nguyenhongphuc98/computer-info",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
